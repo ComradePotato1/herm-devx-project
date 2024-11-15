@@ -88,3 +88,41 @@ route.post('/verify-user', (req, res) => {
     }
   });
 });
+
+
+
+
+const http = require('https');
+
+const options = {
+	method: 'POST',
+	hostname: 'plagiarism-checker-and-auto-citation-generator-multi-lingual.p.rapidapi.com',
+	port: null,
+	path: '/plagiarism',
+	headers: {
+		'x-rapidapi-key': '6d6740424dmsh5b8992841a83e8fp1e3020jsn38ee107f4b3d',
+		'x-rapidapi-host': 'plagiarism-checker-and-auto-citation-generator-multi-lingual.p.rapidapi.com',
+		'Content-Type': 'application/json'
+	}
+};
+
+const req = http.request(options, function (res) {
+	const chunks = [];
+
+	res.on('data', function (chunk) {
+		chunks.push(chunk);
+	});
+
+	res.on('end', function () {
+		const body = Buffer.concat(chunks);
+		console.log(body.toString());
+	});
+});
+
+req.write(JSON.stringify({
+  text: 'This is a test with a minimum of 40 characters to check plagiarism for.',
+  language: 'en',
+  includeCitations: false,
+  scrapeSources: false
+}));
+req.end();
