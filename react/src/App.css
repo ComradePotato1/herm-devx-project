@@ -15,7 +15,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 40vh;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,7 +26,7 @@
 
 .Body {
     background-color: #101010;
-    min-height: 60vh;
+    min-height: 70vh;
     color: white;
     font-size: calc(10px + 2vmin);
 
