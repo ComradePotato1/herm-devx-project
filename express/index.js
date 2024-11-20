@@ -1,9 +1,14 @@
+const OpenAI = require("openai");
 const express = require("express");
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const axios = require("axios");
 const mysql = require('mysql2');
 const cors = require('cors');
+
+
+const openai = new OpenAI();
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -40,6 +45,21 @@ route.get('/pokemon/:name', async (req, res) => {
   } catch (error) {
     res.status(404).send({ error: "Pokémon not found!" });
   }
+});
+
+route.post('/analyze', async (req, res) => {
+    const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            {
+                role: "user",
+                content: "Write a haiku about recursion in programming.",
+            },
+        ],
+    });
+
+    res.json(completion);
 });
 
 const db = mysql.createConnection({
