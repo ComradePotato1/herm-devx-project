@@ -28,7 +28,7 @@ function App() {
               <div style={{ height: "5px" }}></div>
               <br></br>
               <button onClick={() => button()}
-                  style={{ height: "3em", width: "15em", fontSize: "30px", background: "#282c34" }}>add</button>
+                  style={{ height: "3em", width: "15em", fontSize: "30px", background: "#282c34", borderRadius: "100px" }}>add</button>
           </div>
           
     </div>
