@@ -20,7 +20,9 @@ detectlanguage.languages().then(function (langlist) {
     lang = JSON.parse(JSON.stringify(langlist));
 });
 
-db.query("create table count ( lang VARCHAR(255) PRIMARY KEY, count INT NOT NULL )")
+db.query("CREATE DATABASE IF NOT EXISTS devx ", (err, result) => { });
+db.query("USE devx ", (err, result) => { });
+db.query("CREATE TABLE IF NOT EXISTS history ( input VARCHAR(255), lang VARCHAR(255) ) ", (err, result) => {});
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,31 +36,34 @@ app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
-route.get('/analyze', (req, res) => {
-    const { text } = req.body;
+route.get('/analyze/:text', async (req, res) => {
+    const text = req.params.text;
 
     try {
         detectlanguage.detect(text).then(function (analysis) {
             analysis = JSON.stringify(analysis)
             const result = JSON.parse(analysis)
-
-            for (let i = 0; i < result.length; i++) {
-                for (let j = 0; j < lang.length; j++) {
-                    if (result[i].language == lang[j].code) {
-                        result[i].language = lang[j].name;
+            if (result[0].isReliable) {
+                for (let i = 0; i < result.length; i++) {
+                    for (let j = 0; j < lang.length; j++) {
+                        if (result[i].language == lang[j].code) {
+                            result[i].language = lang[j].name;
+                        }
                     }
                 }
+            } else {
+                result[0].language = "Unreliable result"
             }
 
-            const language = result[0].language;
+            const query = 'INSERT INTO history (input, lang) VALUES (?, ?)';
 
-            const query = 'INSERT INTO count VALUES (?)';
-
-            db.query(query, [language], (err, result) => {
+            db.query(query, [text, result[0].language], (err, result) => {
                 if (err) {
-                    return res.status(500).send('Error connecting to the database.');
+                    return res.status(500).send('Error adding data to the database.');
                 }
+                //res.status(200).send('Data added successfully.');
             });
+
 
             res.json(result);
         });
