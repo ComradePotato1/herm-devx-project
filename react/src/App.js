@@ -13,13 +13,15 @@ function App() {
         setInput(e.target.value)
     }
 
+    
+
     const getHistory = async () => {
         try {
             const res = await axios.get('http://localhost:5001/v1/history');
-        console.log(res.data)
-        setHistory([]);
-        const newHistory = res.data.map(item => [item.lang, item.input]);
-        setHistory(newHistory.reverse);
+        console.log(res.data);
+        const newHistory = res.data.map(item => [item.input, item.lang]);
+        setHistory(newHistory.reverse());
+        setTitle("History synced")
         } catch (error) {
             setTitle("ERROR syncing data")
         }
@@ -42,7 +44,15 @@ function App() {
         }
     };
 
-    const remove 
+    const removeHistory = async () => {
+        try {
+            const res = await axios.post('http://localhost:5001/v1/remove');
+            getHistory();
+            setTitle("History cleared");
+        } catch (error) {
+            setTitle("ERROR accessing database")
+        }
+    }
 
   return (
       <div className="App">
@@ -59,7 +69,9 @@ function App() {
               <button onClick={analyze}
                   style={{ height: "3em", width: "15em", fontSize: "30px", background: "#282c34", borderRadius: "100px" }}>analyze</button>
               <button onClick={getHistory}
-                  style={{ height: "3em", width: "15em", fontSize: "30px", background: "#282c34", borderRadius: "100px" }}>sync history</button>
+                  style={{ height: "3em", width: "7.5em", fontSize: "30px", background: "#282c34", borderRadius: "100px" }}>sync history</button>
+              <button onClick={removeHistory}
+                  style={{ height: "3em", width: "7em", fontSize: "30px", background: "#282c34", borderRadius: "100px" }}>clear history</button>
               <div style={{ height: "3em" }}></div>
               <hr></hr>
               <h2>History</h2>
@@ -69,11 +81,11 @@ function App() {
                 <div>
                     <p>Result: {history[1]}</p>
                     <p>{history[0]}</p>
-                    <button>Remove history</button> 
                     <hr></hr>
                 </div>
                 </div>
             ))}
+            <div style={{ height: "3em" }}></div>
               
           </div>
           

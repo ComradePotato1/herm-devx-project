@@ -22,7 +22,7 @@ detectlanguage.languages().then(function (langlist) {
 
 db.query("CREATE DATABASE IF NOT EXISTS devx ", (err, result) => { });
 db.query("USE devx ", (err, result) => { });
-db.query("CREATE TABLE IF NOT EXISTS history ( input VARCHAR(255), lang VARCHAR(255) ) ", (err, result) => {});
+db.query("CREATE TABLE IF NOT EXISTS history ( hist_id INT AUTO_INCREMENT PRIMARY KEY, input VARCHAR(255), lang VARCHAR(255) ) ", (err, result) => {});
 
 const app = express();
 app.use(bodyParser.json());
@@ -85,6 +85,17 @@ route.get('/history', (req, res) => {
     
   });
 });
+
+route.post('/remove', (req, res) => {
+    const query = 'DELETE FROM history WHERE hist_id > -1';
+
+    db.query(query, (err, result) => {
+        if (err) {
+            return res.status(500).send('Error accessing database');
+        }
+        res.status(200).send('success!');
+    });
+})
 
 
 db.connect((err) => {
