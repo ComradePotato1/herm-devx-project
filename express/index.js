@@ -61,7 +61,6 @@ route.get('/analyze/:text', async (req, res) => {
                 if (err) {
                     return res.status(500).send('Error adding data to the database.');
                 }
-                //res.status(200).send('Data added successfully.');
             });
 
 
@@ -72,6 +71,20 @@ route.get('/analyze/:text', async (req, res) => {
     }
 });
 
+route.get('/history', (req, res) => {
+  //const { email, password } = req.body;
+
+  const query = 'SELECT * FROM history';
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send('Error accessing database');
+    }
+    res.status(200).send(results);
+    
+    
+  });
+});
 
 
 db.connect((err) => {
