@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
 const axios = require("axios");
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -72,7 +71,6 @@ route.get('/analyze/:text', async (req, res) => {
 });
 
 route.get('/history', (req, res) => {
-  //const { email, password } = req.body;
 
   const query = 'SELECT * FROM history';
   
@@ -105,57 +103,3 @@ db.connect((err) => {
         console.log('Connected to the MySQL database.');
     }
 });
-
-route.get('/pokemon/:name', async (req, res) => {
-  const pokemonName = req.params.name.toLowerCase();
-
-  try {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
-    
-    const pokemonData = {
-      name: response.data.name,
-      id: response.data.id,
-      height: response.data.height,
-      weight: response.data.weight,
-    };
-    console.log(response)
-    res.json(pokemonData);
-  } catch (error) {
-    res.status(404).send({ error: "Pokémon not found!" });
-  }
-});
-
-
-
-route.post('/add-user', (req, res) => {
-    const { email, password } = req.body;
-
-    const query = 'INSERT INTO users (user_email, user_password) VALUES (?, ?)';
-
-    db.query(query, [email, password], (err, result) => {
-        if (err) {
-            return res.status(500).send('Error adding user to the database.');
-        }
-        res.status(200).send('User added successfully.');
-    });
-});
-
-
-route.post('/verify-user', (req, res) => {
-  const { email, password } = req.body;
-
-  const query = 'SELECT * FROM users WHERE user_email = ? AND user_password = ?';
-  
-  db.query(query, [email, password], (err, results) => {
-    if (err) {
-      return res.status(500).send('Error verifying user credentials.');
-    }
-
-    if (results.length > 0) {
-      res.status(200).send('User verified successfully.');
-    } else {
-      res.status(401).send('Invalid email or password.');
-    }
-  });
-});
-

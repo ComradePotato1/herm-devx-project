@@ -13,7 +13,6 @@ function App() {
         setInput(e.target.value)
     }
 
-    
 
     const getHistory = async () => {
         try {
