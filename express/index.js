@@ -10,9 +10,17 @@ const detectlanguage = new DetectLanguage('d7ad1a34552516bcaa28a67b7d860e83');
 const db = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: 'gpj050304*',
+    password: 'password',
     database: 'devx',
     port: 3306
+});
+
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err.message);
+    } else {
+        console.log('Connected to the MySQL database.');
+    }
 });
 
 detectlanguage.languages().then(function (langlist) {
@@ -96,10 +104,3 @@ route.post('/remove', (req, res) => {
 })
 
 
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to the database:', err.message);
-    } else {
-        console.log('Connected to the MySQL database.');
-    }
-});
